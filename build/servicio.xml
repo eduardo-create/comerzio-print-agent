@@ -1,0 +1,25 @@
+<!--
+  Configuración de WinSW (se instala como ComerzioPrintAgentService.xml junto a
+  ComerzioPrintAgentService.exe). Corre como LocalSystem: arranca con Windows aunque nadie inicie
+  sesión. Ve las impresoras locales (USB), no las compartidas de red mapeadas por usuario.
+
+  Los <onfailure> también son el mecanismo de la auto-actualización: el agente reemplaza su exe y
+  sale con código 3; Windows lo trata como falla y WinSW lo relanza con el exe nuevo.
+-->
+<service>
+  <id>ComerzioPrintAgent</id>
+  <name>Comerzio - Agente de impresion</name>
+  <description>Recibe tickets desde Comerzio (navegador) y los imprime en la impresora termica en modo RAW.</description>
+  <executable>%BASE%\ComerzioPrintAgent.exe</executable>
+  <startmode>Automatic</startmode>
+  <onfailure action="restart" delay="3 sec"/>
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="60 sec"/>
+  <resetfailure>1 hour</resetfailure>
+  <stoptimeout>5 sec</stoptimeout>
+  <logpath>%BASE%\logs</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>1024</sizeThreshold>
+    <keepFiles>5</keepFiles>
+  </log>
+</service>

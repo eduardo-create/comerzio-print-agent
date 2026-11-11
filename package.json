@@ -1,10 +1,21 @@
 {
   "name": "comerzio-print-agent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Agente local que recibe tickets desde Comerzio e imprime en modo RAW (ESC/POS) a una impresora ya instalada en Windows, sin depender del renderizado HTML/CSS del navegador.",
   "private": true,
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "build": "node scripts/build.mjs",
+    "firmar": "node scripts/firmar.mjs",
+    "publicar": "bash scripts/publicar.sh",
+    "generar-claves": "node scripts/generar-claves.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "postject": "^1.0.0-alpha.6",
+    "vitest": "^5.1.0"
   }
 }
