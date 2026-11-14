@@ -15,6 +15,7 @@ const { version: VERSION } = require('../package.json');
 const rutas = require('./rutas');
 const { iniciarActualizador } = require('./actualizador');
 const { CLAVE_PUBLICA } = require('./clavePublica');
+const { origenPermitido } = require('./origenes');
 
 const PUERTO = 41321;
 
@@ -36,8 +37,11 @@ const RAW_PRINT_SCRIPT = rutas.prepararScriptImpresion();
 // para no cortar un ticket a la mitad.
 let impresionesEnCurso = 0;
 
-function conCors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+function conCors(req, res) {
+  if (req.headers.origin) {
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    res.setHeader('Vary', 'Origin');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
@@ -97,7 +101,14 @@ function enviarAImpresora(impresora, bytes) {
 }
 
 const servidor = http.createServer(async (req, res) => {
-  conCors(res);
+  // Antes que nada (incluido el preflight OPTIONS): una página de otro dominio no recibe ni los
+  // headers CORS, así que el navegador tampoco le deja leer la respuesta.
+  if (!origenPermitido(req.headers.origin)) {
+    responderJson(res, 403, { ok: false, error: 'Origen no permitido' });
+    return;
+  }
+
+  conCors(req, res);
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);

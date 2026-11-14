@@ -30,6 +30,14 @@ instalar: si no, el puerto 41321 queda ocupado y el servicio no levanta (lo dice
 Limitación: el servicio corre como LocalSystem, que ve las impresoras locales (USB) pero no las
 compartidas de red mapeadas por usuario (`\\pc\impresora`).
 
+## Qué páginas pueden usarlo
+
+Sólo `https://app.comerzio.com.ar` y el dev server de Vite (`localhost:5173`): cualquier otra
+página que intente hablarle al agente recibe 403 (`src/origenes.js`). Sin esto, cualquier sitio
+abierto en la PC podría imprimir tickets falsos o leer los nombres de las impresoras. **Si Comerzio
+cambia de dominio o se suma otro, hay que publicar una versión del agente con el dominio nuevo
+antes de mover el frontend**: si no, la impresión directa deja de funcionar en todas las PCs.
+
 ## Auto-actualización
 
 **1 minuto después de arrancar y después cada 6 horas**, el agente consulta
